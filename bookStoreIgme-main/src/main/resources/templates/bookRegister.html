@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.com">
+<head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Book Store</title>
+   <script src="https://kit.fontawesome.com/0faddc1af8.js" crossorigin="anonymous"></script>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+  
+  </style>
+   
+  </head>
+<body>
+
+
+	 <div class="flex flex-wrap place-items-center h-auto">
+  <section class="relative mx-auto w-full">
+      <!-- navbar -->
+    <nav class="flex justify-between bg-gray-900 text-white w-full">
+      <div class="px-5 xl:px-12 py-6 flex w-full items-center">
+        <a class="text-3xl font-bold font-heading" href="/">
+          <!-- <img class="h-9" src="logo.png" alt="logo"> -->
+          Igme Store
+        </a>
+        <!-- Nav Links -->
+        <ul class="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12">
+           <li><a class="hover:text-gray-200" aria-current="page" href="/dashboard">Inicio</a></li>
+          <li><a class="hover:text-gray-200" href="available_books">Libros Disponibles</a></li>
+          <li><a class="hover:text-gray-200" href="my_books">Mis libros</a></li>
+          <li th:if="${isAdmin}"><a class="hover:text-gray-200" href="book_register">Registrar Libro</a></li>
+          <li th:if="${isAdmin}"><a class="hover:text-gray-200" href="listado_libros">Listado</a></li>
+        </ul>
+        <!-- Header Icons -->
+        <div class="hidden xl:flex items-center space-x-5 items-center">
+          <a class="hover:text-gray-200" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </a>
+          <a class="flex items-center hover:text-gray-200" href="my_books">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            <span class="flex absolute -mt-5 ml-4">
+              <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
+                </span>
+              </span>
+          </a>
+          <!-- Sign In / Register      -->
+          <a class="flex items-center hover:text-gray-200" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div th:text ="*{userDetails}" class="font-semibold text-white-700">Articles</div>
+          </a>
+          
+        </div>
+      </div>
+      <!-- Responsive navbar -->
+      <a class="xl:hidden flex mr-6 items-center" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="flex absolute -mt-5 ml-4">
+          <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
+          </span>
+        </span>
+      </a>
+      <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+      </a>
+        <div class="hidden xl:flex items-center space-x-5 items-center mr-6">
+		   <div class="hidden sm:flex sm:items-center">
+		  <a th:href="@{/logout}" class="text-white-800 text-sm font-semibold border px-2 py-1 rounded-lg hover:text-purple-600 hover:border-purple-600">Salir</a>
+	 	 </div>
+	   </div>
+    </nav>
+    
+  </section>
+</div>
+    
+    
+    
+ <!--   
+
+	<div class="container my-5 p-5" style="border:1px solid black;">
+		<h4 class="text-center">New Book Register</h4>
+		<form class="col-md-4 offset-md-4" th:action="@{/save}" method="post" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label for="name" class="form-label">Name
+					</label> <input type="text" class="form-control" name="name">	
+			</div>
+			
+			<div class="mb-3">
+				<label for="author" class="form-label">Author
+					</label> <input type="text" class="form-control" name="author">	
+			</div>
+			<div class="mb-3">
+				<label for="price" class="form-label">Price
+					</label> <input type="text" class="form-control" name="price">	
+			</div>
+			
+			<div class="mb-3">
+				<label for="file" class="form-label">Imagen
+					</label> <input type="file" class="form-control" name="file" id="file">	
+			</div>
+			
+			
+			<center><button type="submit" class="btn btn-primary">Submit</button></center>
+		</form>
+	</div>
+
+-->
+<form class="container" th:action="@{/save}" method="post" enctype="multipart/form-data">
+	<div class="bg-white  rounded px-8 pt-6 pb-8 mb-4 flex flex-col my-2">
+	<div class="-mx-3 md:flex mb-6">
+		<div class="md:w-1/2 px-3 mb-6 md:mb-0">
+			<label  class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-first-name">
+				Author
+			</label>
+			<input name="author" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3" id="grid-first-name" type="text" placeholder="Jane" />
+			<p class="text-red text-xs italic">Por favor rellene este campo.</p>
+		</div>
+		<div class="md:w-1/2 px-3">
+			<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-last-name">
+				Precio
+			</label>
+			<input name="price" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4" id="grid-last-name" type="text" placeholder="Doe" />
+		</div>
+	</div>
+	<div class="-mx-3 md:flex mb-6">
+		<div class="md:w-full px-3">
+			<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="grid-password">
+				Nombre
+			</label>
+			<input name="name" class="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3" id="grid-password" type="text" placeholder="Mmeorias de Igmew" />
+			<p class="text-grey-dark text-xs italic">Hazlo tan largo y loco como quieras</p>
+		</div>
+	</div>
+	<div class="mb-8">
+	<input type="file" name="file" id="file" class="sr-only" />
+	<label for="file" class="relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center">
+		<div>
+			<span class="mb-2 block text-xl font-semibold text-[#07074D]">
+				Subir Imagenes aqui
+			</span>
+			<span class="mb-2 block text-base font-medium text-[#6B7280]">
+				O
+			</span>
+			<span class="inline-flex rounded border border-[#e0e0e0] py-2 px-7 text-base font-medium text-[#07074D]">
+				Url
+			</span>
+		</div>
+	</label>
+</div>
+
+<div th:if="${imagenCargada}" class="mb-5 rounded-md bg-[#F5F7FB] py-4 px-8">
+	<div class="flex items-center justify-between">
+		<span th:text="${imagenCargada.getOriginalFilename()}" class="truncate pr-3 text-base font-medium text-[#07074D]">
+			banner-design.png
+		</span>
+		<button class="text-[#07074D]">
+			<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path
+					fill-rule="evenodd"
+					clip-rule="evenodd"
+					d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
+					fill="currentColor"
+				/>
+				<path
+					fill-rule="evenodd"
+					clip-rule="evenodd"
+					d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
+					fill="currentColor"
+				/>
+			</svg>
+		</button>
+	</div>
+</div>
+
+	<div class="-mx-3 md:flex mb-2 flex justify-center">
+		<button type="submit" class="w-1/4 mt-4 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white py-2 rounded-md text-lg font-semibold">Añadir libro</button>
+	</div>
+</div>
+</form>
+
+
+
+	
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"></script>
+	
+
+</body>
+</html>

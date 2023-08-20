@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.com">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Book Store</title>
+   <script src="https://kit.fontawesome.com/0faddc1af8.js" crossorigin="anonymous"></script>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            clifford: '#da373d',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+  
+  </style>
+   
+  </head>
+  <body>
+   
+   <div class="flex flex-wrap place-items-center h-auto">
+  <section class="relative mx-auto w-full">
+      <!-- navbar -->
+    <nav class="flex justify-between bg-gray-900 text-white w-full">
+      <div class="px-5 xl:px-12 py-6 flex w-full items-center">
+        <a class="text-3xl font-bold font-heading" href="/">
+          <!-- <img class="h-9" src="logo.png" alt="logo"> -->
+          Igme Store
+        </a>
+        <!-- Nav Links -->
+        <ul class="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12">
+          <li><a class="hover:text-gray-200" aria-current="page" href="/dashboard">Inicio</a></li>
+          <li><a class="hover:text-gray-200" href="available_books">Libros Disponibles</a></li>
+          <li><a class="hover:text-gray-200" href="my_books">Mis libros</a></li>
+          <li th:if="${isAdmin}"><a class="hover:text-gray-200" href="book_register">Registrar Libro</a></li>
+          <li th:if="${isAdmin}"><a class="hover:text-gray-200" href="listado_libros">Listado</a></li>
+        </ul>
+        <!-- Header Icons -->
+        <div class="hidden xl:flex items-center space-x-5 items-center">
+          <a class="hover:text-gray-200" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </a>
+          <a class="flex items-center hover:text-gray-200" href="my_books">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            <span class="flex absolute -mt-5 ml-4">
+              <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
+                </span>
+              </span>
+          </a>
+          <!-- Sign In / Register      -->
+          <a class="flex items-center hover:text-gray-200" href="#">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div th:text ="*{userDetails}" class="font-semibold text-white-700">Articles</div>
+          </a>
+          
+        </div>
+      </div>
+      <!-- Responsive navbar -->
+      <a class="xl:hidden flex mr-6 items-center" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="flex absolute -mt-5 ml-4">
+          <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
+          </span>
+        </span>
+      </a>
+      <a class="navbar-burger self-center mr-12 xl:hidden" href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+      </a>
+        <div class="hidden xl:flex items-center space-x-5 items-center mr-6">
+		   <div class="hidden sm:flex sm:items-center">
+		  <a th:href="@{/logout}" class="text-white-800 text-sm font-semibold border px-2 py-1 rounded-lg hover:text-purple-600 hover:border-purple-600">Salir</a>
+	 	 </div>
+	   </div>
+    </nav>
+    
+  </section>
+</div>
+    
+    
+<div class="bg-indigo-100 py-6 md:py-12">
+    <div class="container px-4 mx-auto">
+
+      <div class="text-center max-w-2xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-medium mb-2">Descubre el mundo de los libros: tu destino literario en línea.</h1>
+        <button class="bg-indigo-600 text-white py-2 px-6 rounded-full text-xl mt-6">Obetener libro</button>
+        <div class="mt-4">
+          <img src="/images/bookmain.jpg" alt="mockup" class="d-block max-w-full rounded shadow-md">
+        </div>
+      </div>
+
+      <div class="md:flex md:flex-wrap md:-mx-4 mt-6 md:mt-12">
+
+         <div class="md:w-1/3 md:px-4 xl:px-6 mt-8 md:mt-0 text-center">
+      <span class="w-20 border-t-2 border-solid border-indigo-200 inline-block mb-3"></span>
+      <h5 class="text-xl font-medium uppercase mb-4">Amplia selección</h5>
+      <p class="text-gray-600">Nuestra tienda en línea te ofrece una amplia selección de libros de diversos géneros y temas, para que encuentres el perfecto para ti.</p>
+    </div>
+
+    <div class="md:w-1/3 md:px-4 xl:px-6 mt-8 md:mt-0 text-center">
+      <span class="w-20 border-t-2 border-solid border-indigo-200 inline-block mb-3"></span>
+      <h5 class="text-xl font-medium uppercase mb-4">Experiencia de compra sencilla</h5>
+      <p class="text-gray-600">Nuestro sitio web te ofrece una experiencia de compra sencilla y segura, para que puedas encontrar y adquirir tus libros favoritos con facilidad.</p>
+    </div>
+
+    <div class="md:w-1/3 md:px-4 xl:px-6 mt-8 md:mt-0 text-center">
+      <span class="w-20 border-t-2 border-solid border-indigo-200 inline-block mb-3"></span>
+      <h5 class="text-xl font-medium uppercase mb-4">Envío rápido y confiable</h5>
+      <p class="text-gray-600">Nos encargamos de enviar tus libros de manera rápida y confiable, para que puedas disfrutar de tus lecturas sin demoras.</p>
+    </div>
+
+      </div>
+
+    </div>
+  </div>
+
+    
+  </body>
+</html>
